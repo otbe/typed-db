@@ -1,4 +1,4 @@
-import expect from 'expect';
+import * as expect from 'expect';
 import { Db } from '../src/db/Db';
 import { Entity } from '../src/decorators/Entity';
 import { Key } from '../src/decorators/Key';
@@ -268,7 +268,7 @@ describe('Db', () => {
             .count(IDBKeyRange.upperBound([25, 2500])))
     ).toBe(1);
 
-    // indices are OR together, so this will be: age 25 to 25 OR salary 2500 to 3500
+    // indices are ORed together, so this will be: age 25 to 25 OR salary 2500 to 3500
     expect(
       await db.transaction([Employee], 'readonly',
         tx =>

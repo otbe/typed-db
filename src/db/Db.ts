@@ -8,11 +8,14 @@ export type Newable<T> = new (...args: any[]) => T;
 
 export class Db {
   private db: IDBDatabase | null = null;
-  private dbName: string;
-  private version: number;
-  private entities: Array<Newable<any>> = [];
-  private migrations = new Map<Newable<any>, Migration>();
 
+  private dbName: string;
+
+  private version: number;
+
+  private entities: Array<Newable<any>> = [];
+
+  private migrations = new Map<Newable<any>, Migration>();
 
   constructor(dbName: string, version: number) {
     this.dbName = dbName;
@@ -20,6 +23,10 @@ export class Db {
   }
 
   use(entity: Newable<any>, migration?: Migration) {
+    if (!hasEntityDecorator(entity)) {
+      throw `Missing @Entity() detected on ${entity.name}!`;
+    }
+
     this.entities.push(entity);
 
     if (migration != null) {
@@ -31,7 +38,8 @@ export class Db {
 
   async transaction<T>(entities: Array<Newable<any>>, cb: (tx: Transaction) => Promise<T> | void): Promise<T>;
   async transaction<T>(entities: Array<Newable<any>>, mode: 'readonly' | 'readwrite', cb: (tx: Transaction) => Promise<T> | void): Promise<T>;
-  async transaction<T>(entities: Array<Newable<any>>, arg1: any, arg2?: any) {
+  async transaction<T>(...args: Array<any>) {
+    const entities: Array<Newable<any>> = args[0];
     if (!entities.every(x => this.entities.indexOf(x) >= 0)) {
       throw 'Some entities are not registered in db, use `db.use(entity)` to register them';
     }
@@ -42,14 +50,14 @@ export class Db {
 
     let tx: Transaction;
     let result: T;
-    switch (arguments.length) {
+    switch (args.length) {
       case 2:
         tx = new Transaction(this.db, entities, 'readonly');
-        result = await arg1(tx);
+        result = await args[1](tx);
         break;
       case 3:
-        tx = new Transaction(this.db, entities, arg1);
-        result = await arg2(tx);
+        tx = new Transaction(this.db, entities, args[1]);
+        result = await args[2](tx);
         break;
       default:
         throw 'wrong count of arguments for transaction()';
@@ -99,8 +107,6 @@ const upgradeVersion = async (db: IDBDatabase, entities: Array<Newable<any>>, mi
       const tx = new Transaction(db, [entity], 'readwrite');
       await migration(tx);
       await tx.completion();
-
-
     } else {
       const objectStore = db.createObjectStore(name, {
         keyPath: getKeyPath(keyPath),
@@ -123,4 +129,8 @@ const getKeyPath = (keyPath: Array<string>) => {
     default:
       return keyPath as any;
   }
+};
+
+const hasEntityDecorator = (entity: Newable<any>) => {
+  return new EntityMetadata(Reflect.getMetadata(ENTITY_SYMBOL, entity)).name != null;
 };

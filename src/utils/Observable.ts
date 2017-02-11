@@ -1,9 +1,19 @@
 const noop = () => { };
 
-export const createObservable = <T>(subscription: (subscription: { complete: () => void; next: (v: T) => void; error: (e: any) => void; }) => void) => {
+export interface Subscriber<T> {
+  complete: () => void;
+  next: (v: T) => void;
+  error: (e: any) => void;
+}
+
+export interface Observable<T> {
+  subscribe: (onNext: (v: T) => void, onError?: (e: any) => void, onComplete?: () => void) => void;
+}
+
+export const createObservable = <T>(subscribe: (subscriber: Subscriber<T>) => void): Observable<T> => {
   return {
     subscribe: (onNext: (v: T) => void, onError?: (e: any) => void, onComplete?: () => void) => {
-      subscription({
+      subscribe({
         next: onNext,
         error: onError || noop,
         complete: onComplete || noop

@@ -4,7 +4,7 @@
   "main": "dist-release/index.js",
   "typings": "dist-release/src/index.d.ts",
   "author": "Benjamin Otto",
-  "description": "Promise based wrapper for IndexedDB written entirely in TypeScript",
+  "description": "Entity manager for IndexedDB written entirely in TypeScript",
   "license": "MIT",
   "keywords": [
     "indexeddb",

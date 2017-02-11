@@ -1,4 +1,4 @@
-import expect from 'expect';
+import * as expect from 'expect';
 import { Entity } from '../../src/decorators/Entity';
 import { ENTITY_SYMBOL, EntityMetadata } from '../../src/decorators/EntityMetadata';
 

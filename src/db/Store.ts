@@ -1,7 +1,9 @@
 import { Index } from './Index';
 import { Entity } from '../decorators/Entity';
 import { Cursor } from './Cursor';
-import { createObservable } from '../utils/Observable';
+import { createObservable, Observable } from '../utils/Observable';
+import { createCursorResult } from '../utils/CursorResult';
+import { EntityMetadata } from '../decorators/EntityMetadata';
 
 export const DIRECTION = {
   ASC: 'next',
@@ -11,15 +13,19 @@ export const DIRECTION = {
 };
 
 export class Store<T> {
+  private meta: EntityMetadata;
+
   private store: IDBObjectStore;
 
-  constructor(store: IDBObjectStore) {
+  constructor(metadata: EntityMetadata, store: IDBObjectStore) {
+    this.meta = metadata;
     this.store = store;
   }
 
   get(key: IDBValidKey | IDBKeyRange) {
+    const request = this.store.get(key);
+
     return new Promise<T>((resolve, reject) => {
-      const request = this.store.get(key);
       request.addEventListener('success', (e: any) => resolve(e.target.result));
       request.addEventListener('error', reject);
     });
@@ -28,80 +34,57 @@ export class Store<T> {
   openCursor(range?: IDBKeyRange | IDBValidKey, direction?: string) {
     let request: IDBRequest = this.store.openCursor.apply(this.store, arguments);
 
-
-
-    const result = {
-      asCursor: () => createObservable<Cursor<T>>(subscriber => {
-        request.addEventListener('success', (e: any) => {
-          const cursor: IDBCursorWithValue = e.target.result;
-
-          if (cursor == null) {
-            return subscriber.complete();
-          }
-
-          subscriber.next(new Cursor<T>(cursor));
-        });
-
-        request.addEventListener('error', (e) => subscriber.error(e));
-      }),
-      asList: async () => {
-        const list: Array<T> = [];
-
-        return new Promise<Array<T>>((resolve, reject) => {
-          result
-            .asCursor()
-            .subscribe(cursor => {
-              list.push(cursor.value);
-              cursor.continue();
-            },
-            reject,
-            () => resolve(list));
-        });
-      }
-    };
-
-    return result;
+    return createCursorResult<T>(request);
   }
 
   add(value: T, key?: IDBKeyRange | IDBValidKey) {
+    let request: IDBRequest = this.store.add.apply(this.store, arguments);
+
     return new Promise<IDBValidKey>((resolve, reject) => {
-      let request: IDBRequest = this.store.add.apply(this.store, arguments);
       request.addEventListener('success', (e: any) => resolve(e.target.result));
       request.addEventListener('error', reject);
     });
   }
 
   put(value: T, key?: IDBValidKey) {
+    let request: IDBRequest = this.store.put.apply(this.store, arguments);
+
     return new Promise<IDBValidKey>((resolve, reject) => {
-      let request: IDBRequest = this.store.put.apply(this.store, arguments);
       request.addEventListener('success', (e: any) => resolve(e.target.result));
       request.addEventListener('error', reject);
     });
   }
 
   index(name: keyof T | string) {
+    if (!this.meta.indices.some(x => x.name === name)) {
+      throw `No index for ${name} found!`;
+    }
+
     return new Index<T>(this.store.index(name));
   }
 
   delete(key: IDBKeyRange | IDBValidKey) {
+    const request = this.store.delete(key);
+
     return new Promise((resolve, reject) => {
-      const request = this.store.delete(key);
       request.addEventListener('success', resolve);
       request.addEventListener('error', reject);
     });
   }
 
   clear() {
+    const request = this.store.clear();
+
     return new Promise((resolve, reject) => {
-      const request = this.store.clear();
       request.addEventListener('success', resolve);
       request.addEventListener('error', reject);
     });
   }
 
   count(key?: IDBKeyRange | IDBValidKey) {
+    let request: IDBRequest = this.store.count.apply(this.store, arguments);
+
     return new Promise<number>((resolve, reject) => {
-      let request: IDBRequest = this.store.count.apply(this.store, arguments);
       request.addEventListener('success', (e: any) => resolve(e.target.result));
       request.addEventListener('error', reject);
     });

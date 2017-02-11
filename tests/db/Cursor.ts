@@ -1,12 +1,12 @@
-import expect, { createSpy, Spy } from 'expect';
+import * as expect from 'expect';
 import { Cursor } from '../../src/db/Cursor';
 
 describe('Cursor', () => {
   it('should let me use the wrapped IDBCursor', () => {
     const fakeCursor = {
       value: 10,
-      continue: createSpy(),
-      advance: createSpy()
+      continue: expect.createSpy(),
+      advance: expect.createSpy()
     } as any as IDBCursorWithValue;
 
     const cursor = new Cursor<number>(fakeCursor);
@@ -16,7 +16,7 @@ describe('Cursor', () => {
     cursor.continue();
     expect(fakeCursor.continue).toHaveBeenCalled();
 
-    (fakeCursor.continue as Spy<any>).reset();
+    (fakeCursor.continue as expect.Spy<any>).reset();
 
     cursor.continue('foo');
     expect(fakeCursor.continue).toHaveBeenCalledWith('foo');

@@ -27,15 +27,3 @@ export function Index(arg1?: any, arg2?: any): PropertyDecorator {
     Reflect.defineMetadata(ENTITY_SYMBOL, entityMetadata, target.constructor);
   };
 };
-
-// export function NestedIndex(parent: Object, name: string, options: IDBIndexParameters = {}): PropertyDecorator {
-//   return (target: Object, propertyKey: string | symbol) => {
-//     const entityMetadata = new EntityMetadata(Reflect.getMetadata(ENTITY_SYMBOL, parent.constructor));
-//     const index = entityMetadata.indices.find(x => x.name === `${name}.${propertyKey.toString()}`);
-//     if (index != null) {
-//       index.keyPath.push(`${name}.${propertyKey.toString()}`);
-//     } else {
-//       entityMetadata.indices.push({ name: `${name}.${propertyKey.toString()}`, keyPath: [`${name}.${propertyKey.toString()}`], options });
-//     }
-//   };
-// }
