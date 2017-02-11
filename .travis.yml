@@ -1,0 +1,17 @@
+language: node_js
+node_js:
+  - '6'
+install:
+  - yarn
+cache: yarn
+script: yarn run test
+before_deploy:
+  - yarn run build
+deploy:
+  provider: npm
+  email: benjamin.otto@style-systems.de
+  api_key:
+    secure: hy0/WefqLp8rRK9WepO593S4OO/vRXNfoggTKvt3WV3pTIeqVVErHLIgmvI/d7NUtcnToiuQRC08G2UO29Qz6BM7v86T4RiA/LVFBDxejLmez6tksGnZU2n4/t0qY3LZSUnsdjcECfLLaRMlB93OEvfqbC/HHSUkiTUAPKDbcrAlldCoL24kLKxCuF8JDRpW1ZHHSh8ETdlLdXvPn12iuNEhcWOt813jf56mxmsGL9I2FZcfKCxT1ABPpAaxTN3OJb4LdHy5+XuRRKqWiVqERhjZUT5RS0ryCm9hGN/XG462b8AKxn98dpLWI09GGfS19aicXMPlE/W9ZF6AtlyY6eM112Db5IgKdapgI3vAPG525T7sMvykMkSBckoYycoCTLZbm+PloA4E+RbYh1Ewu0RNTqrLFCjlitzHs0j0lMXtBZYCBuxwblOUou9GwTCJmQffMNZLOaFhaEbbNkyU/gZB1PQeFKRMh3wMfsY3zdPEYwSBxscv1srbzeH2mTYXci8jisdbnaXSqxo+Mc1hDX/Qwv7kGC4xSfLe2MEgybv8Nlzs4BKFXIGnuh2d5NwGbf5s6GcAhkYfW1bWDb68zPUKVpghqrxo3dBePv4KRnwRyL2YGw5rwV8DgI9PROVAH2z6vXSF3Qj6h7bemlIRt4sGiE7DjkmQyMZ48tL7f7c=
+  on:
+    tags: true
+    repo: otbe/typed-db

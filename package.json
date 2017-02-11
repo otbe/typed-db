@@ -1,0 +1,41 @@
+{
+  "name": "typed-db",
+  "version": "1.0.0",
+  "main": "dist-release/index.js",
+  "typings": "dist-release/src/index.d.ts",
+  "author": "Benjamin Otto",
+  "description": "Promise based wrapper for IndexedDB written entirely in TypeScript",
+  "license": "MIT",
+  "keywords": [
+    "indexeddb",
+    "indexed",
+    "typescript"
+  ],
+  "scripts": {
+    "test": "yarn run ws unit && yarn run ws lint",
+    "build": "yarn run ws -- b -p",
+    "preversion": "yarn run test",
+    "postversion": "git push && git push --tags"
+  },
+  "bugs": {
+    "url": "https://github.com/otbe/typed-db/issues"
+  },
+  "homepage": "https://github.com/otbe/typed-db#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/otbe/typed-db.git"
+  },
+  "ws": {
+    "type": "browser"
+  },
+  "devDependencies": {
+    "@mercateo/ws": "1.0.1-60",
+    "@types/expect": "^1.20.0",
+    "@types/lodash": "^4.14.52",
+    "babel-polyfill": "^6.22.0",
+    "expect": "^1.20.2",
+    "lodash": "^4.17.4",
+    "reflect-metadata": "^0.1.9"
+  },
+  "dependencies": {}
+}

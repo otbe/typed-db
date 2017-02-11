@@ -1,0 +1,15 @@
+# common
+
+.DS_Store
+.idea
+*.log
+node_modules/
+.tmp
+*.iml
+
+# only ignore, if in root
+
+/coverage/
+/dist/
+/dist-release/
+/dist-tests/
