@@ -1,6 +1,6 @@
 {
   "name": "typed-db",
-  "version": "1.0.1-0",
+  "version": "1.0.1-1",
   "main": "dist-release/index.js",
   "typings": "dist-release/src/index.d.ts",
   "author": "Benjamin Otto",
