@@ -12,9 +12,9 @@
     "typescript"
   ],
   "scripts": {
-    "test": "npm run ws unit && npm run ws lint",
-    "build": "npm run ws -- b -p",
-    "preversion": "npm run test",
+    "test": "yarn run ws unit && yarn run ws lint",
+    "build": "yarn run ws -- b -p",
+    "preversion": "yarn run test",
     "postversion": "git push && git push --tags"
   },
   "bugs": {
