@@ -1,12 +1,10 @@
 language: node_js
 node_js:
   - '6'
-install:
-  - yarn
 cache: yarn
-script: yarn run test
+script: npm run test
 before_deploy:
-  - yarn run build
+  - npm run build
 deploy:
   provider: npm
   email: benjamin.otto@style-systems.de
