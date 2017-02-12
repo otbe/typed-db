@@ -67,7 +67,7 @@ Create a transaction:
 ```typescript
 // pass in an array of entities which are in the same transaction scope
 // set the mode of the transaction, supported: readwrite | readonly
-// callback with transaction (tx), return value auf this function will be the result of the transaction, can be async
+// callback with transaction (tx), return value of this function will be the result of the transaction, can be async
 db.transaction([Foo], 'readwrite', tx => {...});
 ```
 
